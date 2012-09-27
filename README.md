@@ -1,7 +1,7 @@
-ImageFile for iOS
+# MegapixImageFile for iOS
 
-Fixing iOS6 image file rendering issue for large megapixel image (which oftenly subsampled while calling drawImage in canvas), and safely renders with proper stretching.
+Fixes iOS6 image file rendering issue for large size image (over megapixel), which causes unexpected subsampling when drawing it in canvas, and safely renders with proper stretching.
 
-Although it fixes iOS related issues, it can be safely used in the envionmnets other than iOS6.
+Although it mainly focuses fixing iOS related issues, it can be safely used in the envionments other than iOS6.
 
 

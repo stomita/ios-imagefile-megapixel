@@ -1,14 +1,14 @@
 /**
- * ImageFile for iOS
+ * MegapixImageFile for iOS
  * 
- * Fixing iOS image file rendering issue for large megapixel image,
- * (which oftenly subsampled while calling drawImage in canvas)
+ * Fixes iOS6 image file rendering issue for large size image (over megapixel),
+ * which causes unexpected subsampling when drawing it in canvas,
  * and safely renders with proper stretching.
  */
 (function() {
 
   /**
-   * Detect subsampling is happening in loaded image.
+   * Detect subsampling in loaded image.
    * In iOS, larger images than 2M pixels may be subsampled in rendering.
    */
   function detectSubsampling(img) {
@@ -28,7 +28,8 @@
   }
 
   /**
-   * iOS safari seems to have a bug to squash image vertically in Context#drawImage().
+   * Detecting vertical squash in loaded image.
+   * Fixes a bug which squash image vertically while drawing into canvas for some images.
    */
   function detectVerticalSquash(img, iw, ih) {
     var canvas = document.createElement('canvas');
@@ -102,17 +103,18 @@
   }
 
 
+
   /**
-   *
+   * MegapixImageFile class
    */
-  function ImageFile(file, options) {
+  function MegapixImageFile(file, options) {
     this.file = file;
   }
 
   /**
-   *
+   * Rendering file into specified target element
    */
-  ImageFile.prototype.render = function(target, options) {
+  MegapixImageFile.prototype.render = function(target, options) {
     options = options || {}
     var width = options.width, height = options.height;
     var file = this.file;
@@ -132,12 +134,12 @@
   }
 
   /**
-   *
+   * Export class to global
    */
   if (typeof define === 'function' && define.amd) {
-    define(ImageFile);
+    define(MegapixImageFile); // for AMD loader
   } else {
-    this.ImageFile = ImageFile;
+    this.MegapixImageFile = MegapixImageFile;
   }
 
 })();
