@@ -129,7 +129,13 @@
       }
       var opt = { width : width, height : height }
       for (var k in options) opt[k] = options[k];
-      target.src = renderImageToDataURL(img, opt);
+
+      var tagName = target.tagName.toLowerCase();
+      if (tagName === 'img') {
+        target.src = renderImageToDataURL(img, opt);
+      } else if (tagName === 'canvas') {
+        renderImageToCanvas(img, target, opt);
+      }
     }
   }
 
