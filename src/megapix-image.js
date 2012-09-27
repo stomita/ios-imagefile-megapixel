@@ -105,36 +105,59 @@
 
 
   /**
-   * MegapixImageFile class
+   * MegaPixImage class
    */
-  function MegapixImageFile(file, options) {
-    this.file = file;
+  function MegaPixImage(srcImage) {
+    if (srcImage instanceof Blob) {
+      var img = new Image();
+      img.src = (window.URL || window.webkitURL).createObjectURL(srcImage);
+      srcImage = img;
+    }
+    if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
+      var _this = this;
+      srcImage.onload = function() { _this.onImageLoad(); }
+      this.imageLoadListeners = [];
+    }
+    this.srcImage = srcImage;
   }
 
   /**
-   * Rendering file into specified target element
+   * Rendering megapix image into specified target element
    */
-  MegapixImageFile.prototype.render = function(target, options) {
+  MegaPixImage.prototype.render = function(target, options) {
+    if (this.imageLoadListeners) {
+      var _this = this;
+      this.imageLoadListeners.push(function() { _this.render(target, options) });
+      return;
+    }
     options = options || {}
     var width = options.width, height = options.height;
-    var file = this.file;
-    var img = new Image();
-    var URL = window.URL || window.webkitURL;
-    img.src = URL.createObjectURL(this.file);
-    img.onload = function() {
-      if (width && !height) {
-        height = Math.floor(img.naturalHeight * width / img.naturalWidth);
-      } else if (height && !width) {
-        width = Math.floor(img.naturalWidth * height / img.naturalHeight);
-      }
-      var opt = { width : width, height : height }
-      for (var k in options) opt[k] = options[k];
+    if (width && !height) {
+      height = Math.floor(this.srcImage.naturalHeight * width / this.srcImage.naturalWidth);
+    } else if (height && !width) {
+      width = Math.floor(this.srcImage.naturalWidth * height / this.srcImage.naturalHeight);
+    }
+    var opt = { width : width, height : height }
+    for (var k in options) opt[k] = options[k];
 
-      var tagName = target.tagName.toLowerCase();
-      if (tagName === 'img') {
-        target.src = renderImageToDataURL(img, opt);
-      } else if (tagName === 'canvas') {
-        renderImageToCanvas(img, target, opt);
+    var tagName = target.tagName.toLowerCase();
+    if (tagName === 'img') {
+      console.log(this.srcImage);
+      target.src = renderImageToDataURL(this.srcImage, opt);
+    } else if (tagName === 'canvas') {
+      renderImageToCanvas(this.srcImage, target, opt);
+    }
+  }
+
+  /**
+   *
+   */
+  MegaPixImage.prototype.onImageLoad = function(target, options) {
+    var listeners = this.imageLoadListeners;
+    if (listeners) {
+      this.imageLoadListeners = null;
+      for (var i=0, len=listeners.length; i<len; i++) {
+        listeners[i]();
       }
     }
   }
@@ -143,9 +166,9 @@
    * Export class to global
    */
   if (typeof define === 'function' && define.amd) {
-    define(MegapixImageFile); // for AMD loader
+    define(MegaPixImage); // for AMD loader
   } else {
-    this.MegapixImageFile = MegapixImageFile;
+    this.MegaPixImage = MegaPixImage;
   }
 
 })();
