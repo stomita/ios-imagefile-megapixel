@@ -155,6 +155,9 @@
     } else if (tagName === 'canvas') {
       renderImageToCanvas(this.srcImage, target, opt);
     }
+    if (typeof this.onrender === 'function') {
+      this.onrender(target);
+    }
   }
 
   /**
