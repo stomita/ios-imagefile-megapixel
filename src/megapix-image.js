@@ -115,7 +115,15 @@
     }
     if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
       var _this = this;
-      srcImage.onload = function() { _this.onImageLoad(); }
+      srcImage.onload = function() {
+        var listeners = _this.imageLoadListeners;
+        if (listeners) {
+          _this.imageLoadListeners = null;
+          for (var i=0, len=listeners.length; i<len; i++) {
+            listeners[i]();
+          }
+        }
+      };
       this.imageLoadListeners = [];
     }
     this.srcImage = srcImage;
@@ -146,19 +154,6 @@
       target.src = renderImageToDataURL(this.srcImage, opt);
     } else if (tagName === 'canvas') {
       renderImageToCanvas(this.srcImage, target, opt);
-    }
-  }
-
-  /**
-   *
-   */
-  MegaPixImage.prototype.onImageLoad = function(target, options) {
-    var listeners = this.imageLoadListeners;
-    if (listeners) {
-      this.imageLoadListeners = null;
-      for (var i=0, len=listeners.length; i<len; i++) {
-        listeners[i]();
-      }
     }
   }
 
