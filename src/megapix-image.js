@@ -69,9 +69,9 @@
   function renderImageToCanvas(img, canvas, options) {
     var iw = img.naturalWidth, ih = img.naturalHeight;
     var width = options.width, height = options.height;
-    canvas.width = width;
-    canvas.height = height;
     var ctx = canvas.getContext('2d');
+    ctx.save();
+    transformCoordinate(canvas, width, height, options.orientation);
     var subsampled = detectSubsampling(img);
     if (subsampled) {
       iw /= 2;
@@ -99,9 +99,73 @@
       }
       sy += d;
     }
+    ctx.restore();
     tmpCanvas = tmpCtx = null;
   }
 
+  /**
+   * Transform canvas coordination according to specified frame size and orientation
+   * Orientation value is from EXIF tag
+   */
+  function transformCoordinate(canvas, width, height, orientation) {
+    console.log(width, height);
+    switch (orientation) {
+      case 5:
+      case 6:
+      case 7:
+      case 8:
+        canvas.width = height;
+        canvas.height = width;
+        break;
+      default:
+        canvas.width = width;
+        canvas.height = height;
+    }
+    var ctx = canvas.getContext('2d');
+    switch (orientation) {
+      case 1:
+        // nothing
+        break;
+      case 2:
+        // horizontal flip
+        ctx.translate(width, 0);
+        ctx.scale(-1, 1);
+        break;
+      case 3:
+        // 180 rotate left
+        ctx.translate(width, height);
+        ctx.rotate(Math.PI);
+        break;
+      case 4:
+        // vertical flip
+        ctx.translate(0, height);
+        ctx.scale(1, -1);
+        break;
+      case 5:
+        // vertical flip + 90 rotate right
+        ctx.rotate(0.5 * Math.PI);
+        ctx.scale(1, -1);
+        break;
+      case 6:
+        // 90 rotate right
+        ctx.rotate(0.5 * Math.PI);
+        ctx.translate(0, -height);
+        break;
+      case 7:
+        // horizontal flip + 90 rotate right
+        ctx.rotate(0.5 * Math.PI);
+        ctx.translate(width, -height);
+        ctx.scale(-1, 1);
+        break;
+      case 8:
+        // 90 rotate left
+        ctx.rotate(-0.5 * Math.PI);
+        ctx.translate(-width, 0);
+        break;
+      default:
+        break;
+    }
+  }
 
 
   /**
