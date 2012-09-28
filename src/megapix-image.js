@@ -228,7 +228,7 @@
    * Export class to global
    */
   if (typeof define === 'function' && define.amd) {
-    define(MegaPixImage); // for AMD loader
+    define([], function() { return MegaPixImage; }); // for AMD loader
   } else {
     this.MegaPixImage = MegaPixImage;
   }
