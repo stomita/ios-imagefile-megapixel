@@ -60,7 +60,7 @@
   function renderImageToDataURL(img, options) {
     var canvas = document.createElement('canvas');
     renderImageToCanvas(img, canvas, options);
-    return canvas.toDataURL();
+    return canvas.toDataURL("image/jpeg", options.quality || 0.8);
   }
 
   /**
@@ -203,11 +203,24 @@
       return;
     }
     options = options || {}
-    var width = options.width, height = options.height;
+    var imgWidth = this.srcImage.naturalWidth, imgHeight = this.srcImage.naturalHeight,
+        width = options.width, height = options.height,
+        maxWidth = options.maxWidth, maxHeight = options.maxHeight;
     if (width && !height) {
-      height = Math.floor(this.srcImage.naturalHeight * width / this.srcImage.naturalWidth);
+      height = Math.floor(imgHeight * width / imgWidth);
     } else if (height && !width) {
-      width = Math.floor(this.srcImage.naturalWidth * height / this.srcImage.naturalHeight);
+      width = Math.floor(imgWidth * height / imgHeight);
+    } else {
+      width = imgWidth;
+      height = imgHeight;
+    }
+    if (maxWidth && width > maxWidth) {
+      width = maxWidth;
+      height = Math.floor(imgHeight * width / imgWidth);
+    }
+    if (maxHeight && height > maxHeight) {
+      height = maxHeight;
+      width = Math.floor(imgWidth * height / imgHeight);
     }
     var opt = { width : width, height : height }
     for (var k in options) opt[k] = options[k];

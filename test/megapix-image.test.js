@@ -3,7 +3,7 @@ window.onload = function() {
   fileInput.onchange = function() {
     var file = fileInput.files[0];
     var mpImg = new MegaPixImage(file);
-    mpImg.render(document.getElementById('resultImage'), { width: 640 });
-    mpImg.render(document.getElementById('resultCanvas'), { width: 640 });
+    mpImg.render(document.getElementById('resultImage'), { maxWidth: 960, maxHeight: 960, quality: 0.5 });
+    mpImg.render(document.getElementById('resultCanvas'), { maxWidth: 960, maxHeight: 960 });
   }
 };
