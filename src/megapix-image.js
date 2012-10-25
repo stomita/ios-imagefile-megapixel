@@ -177,7 +177,11 @@
   function MegaPixImage(srcImage) {
     if (srcImage instanceof Blob) {
       var img = new Image();
-      img.src = (window.URL || window.webkitURL).createObjectURL(srcImage);
+      var URL = window.URL && window.URL.createObjectURL ? window.URL :
+                window.webkitURL && window.webkitURL.createObjectURL ? window.webkitURL :
+                null;
+      if (!URL) { throw Error("No createObjectURL function found to create blob url"); }
+      img.src = URL.createObjectURL(srcImage);
       srcImage = img;
     }
     if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
