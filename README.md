@@ -9,3 +9,13 @@ About iOS Safari's resource limitation and subsampling, see following link:
 Although it mainly focuses fixing iOS Safari related issues, it can be safely used in the envionments other than iOS6.
 
 
+## Usage
+
+See ./test directory.
+
+
+## FAQ
+Q. Photos from iPhone is rotated and not in correct orientation.
+A. Orientation of jpeg file is recorded in EXIF format. This library won't detect exif information automatically. To detect the information in JavaScript, use exif.js (https://github.com/jseidelin/exif-js).
+
+

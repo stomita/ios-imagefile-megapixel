@@ -37,7 +37,7 @@
   function detectVerticalSquash(img, iw, ih) {
     var canvas = document.createElement('canvas');
     canvas.width = 1;
-    canvas.height = ih
+    canvas.height = ih;
     var ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
     var data = ctx.getImageData(0, 0, 1, ih).data;
@@ -111,7 +111,6 @@
    * Orientation value is from EXIF tag
    */
   function transformCoordinate(canvas, width, height, orientation) {
-    console.log(width, height);
     switch (orientation) {
       case 5:
       case 6:
@@ -209,7 +208,7 @@
       this.imageLoadListeners.push(function() { _this.render(target, options) });
       return;
     }
-    options = options || {}
+    options = options || {};
     var imgWidth = this.srcImage.naturalWidth, imgHeight = this.srcImage.naturalHeight,
         width = options.width, height = options.height,
         maxWidth = options.maxWidth, maxHeight = options.maxHeight;
@@ -229,12 +228,11 @@
       height = maxHeight;
       width = Math.floor(imgWidth * height / imgHeight);
     }
-    var opt = { width : width, height : height }
+    var opt = { width : width, height : height };
     for (var k in options) opt[k] = options[k];
 
     var tagName = target.tagName.toLowerCase();
     if (tagName === 'img') {
-      console.log(this.srcImage);
       target.src = renderImageToDataURL(this.srcImage, opt);
     } else if (tagName === 'canvas') {
       renderImageToCanvas(this.srcImage, target, opt);
@@ -242,7 +240,7 @@
     if (typeof this.onrender === 'function') {
       this.onrender(target);
     }
-  }
+  };
 
   /**
    * Export class to global
