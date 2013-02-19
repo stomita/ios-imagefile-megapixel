@@ -54,7 +54,8 @@
       }
       py = (ey + sy) >> 1;
     }
-    return py / ih;
+    var ratio = (py / ih);
+    return (ratio===0)?1:ratio;
   }
 
   /**
