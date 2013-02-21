@@ -94,9 +94,9 @@
         var sw = sx + d > iw ? iw - sx : d;
         tmpCtx.clearRect(0, 0, d, d);
         tmpCtx.drawImage(img, -sx, -sy);
-        var dx = Math.floor(sx * width / iw);
+        var dx = (sx * width / iw) << 0;
         var dw = Math.ceil(sw * width / iw);
-        var dy = Math.floor(sy * height / ih / vertSquashRatio);
+        var dy = (sy * height / ih / vertSquashRatio) << 0;
         var dh = Math.ceil(sh * height / ih / vertSquashRatio);
         ctx.drawImage(tmpCanvas, 0, 0, sw, sh, dx, dy, dw, dh);
         sx += d;
@@ -126,9 +126,6 @@
     }
     var ctx = canvas.getContext('2d');
     switch (orientation) {
-      case 1:
-        // nothing
-        break;
       case 2:
         // horizontal flip
         ctx.translate(width, 0);
@@ -214,20 +211,20 @@
         width = options.width, height = options.height,
         maxWidth = options.maxWidth, maxHeight = options.maxHeight;
     if (width && !height) {
-      height = Math.floor(imgHeight * width / imgWidth);
+      height = (imgHeight * width / imgWidth) << 0;
     } else if (height && !width) {
-      width = Math.floor(imgWidth * height / imgHeight);
+      width = (imgWidth * height / imgHeight) << 0;
     } else {
       width = imgWidth;
       height = imgHeight;
     }
     if (maxWidth && width > maxWidth) {
       width = maxWidth;
-      height = Math.floor(imgHeight * width / imgWidth);
+      height = (imgHeight * width / imgWidth) << 0;
     }
     if (maxHeight && height > maxHeight) {
       height = maxHeight;
-      width = Math.floor(imgWidth * height / imgHeight);
+      width = (imgWidth * height / imgHeight) << 0;
     }
     var opt = { width : width, height : height };
     for (var k in options) opt[k] = options[k];
