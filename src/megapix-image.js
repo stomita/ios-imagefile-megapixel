@@ -126,9 +126,6 @@
     }
     var ctx = canvas.getContext('2d');
     switch (orientation) {
-      case 1:
-        // nothing
-        break;
       case 2:
         // horizontal flip
         ctx.translate(width, 0);
