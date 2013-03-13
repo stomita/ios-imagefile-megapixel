@@ -86,22 +86,22 @@
     tmpCanvas.width = tmpCanvas.height = d;
     var tmpCtx = tmpCanvas.getContext('2d');
     var vertSquashRatio = detectVerticalSquash(img, iw, ih);
+    var dw = Math.ceil(d * width / iw);
+    var dh = Math.ceil(d * height / ih / vertSquashRatio);
     var sy = 0;
+    var dy = 0;
     while (sy < ih) {
-      var sh = sy + d > ih ? ih - sy : d;
       var sx = 0;
+      var dx = 0;
       while (sx < iw) {
-        var sw = sx + d > iw ? iw - sx : d;
         tmpCtx.clearRect(0, 0, d, d);
         tmpCtx.drawImage(img, -sx, -sy);
-        var dx = (sx * width / iw) << 0;
-        var dw = Math.ceil(sw * width / iw);
-        var dy = (sy * height / ih / vertSquashRatio) << 0;
-        var dh = Math.ceil(sh * height / ih / vertSquashRatio);
-        ctx.drawImage(tmpCanvas, 0, 0, sw, sh, dx, dy, dw, dh);
+        ctx.drawImage(tmpCanvas, 0, 0, d, d, dx, dy, dw, dh);
         sx += d;
+        dx += dw;
       }
       sy += d;
+      dy += dh;
     }
     ctx.restore();
     tmpCanvas = tmpCtx = null;
