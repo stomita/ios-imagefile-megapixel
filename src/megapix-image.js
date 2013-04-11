@@ -61,16 +61,16 @@
   /**
    * Rendering image element (with resizing) and get its data URL
    */
-  function renderImageToDataURL(img, options) {
+  function renderImageToDataURL(img, options, doSquash) {
     var canvas = document.createElement('canvas');
-    renderImageToCanvas(img, canvas, options);
+    renderImageToCanvas(img, canvas, options, doSquash);
     return canvas.toDataURL("image/jpeg", options.quality || 0.8);
   }
 
   /**
    * Rendering image element (with resizing) into the canvas element
    */
-  function renderImageToCanvas(img, canvas, options) {
+  function renderImageToCanvas(img, canvas, options, doSquash) {
     var iw = img.naturalWidth, ih = img.naturalHeight;
     var width = options.width, height = options.height;
     var ctx = canvas.getContext('2d');
@@ -85,7 +85,7 @@
     var tmpCanvas = document.createElement('canvas');
     tmpCanvas.width = tmpCanvas.height = d;
     var tmpCtx = tmpCanvas.getContext('2d');
-    var vertSquashRatio = detectVerticalSquash(img, iw, ih);
+    var vertSquashRatio = doSquash ? detectVerticalSquash(img, iw, ih) : 1;
     var dw = Math.ceil(d * width / iw);
     var dh = Math.ceil(d * height / ih / vertSquashRatio);
     var sy = 0;
@@ -179,6 +179,7 @@
                 null;
       if (!URL) { throw Error("No createObjectURL function found to create blob url"); }
       img.src = URL.createObjectURL(srcImage);
+      this.blob = srcImage;
       srcImage = img;
     }
     if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
@@ -209,7 +210,8 @@
     options = options || {};
     var imgWidth = this.srcImage.naturalWidth, imgHeight = this.srcImage.naturalHeight,
         width = options.width, height = options.height,
-        maxWidth = options.maxWidth, maxHeight = options.maxHeight;
+        maxWidth = options.maxWidth, maxHeight = options.maxHeight,
+        doSquash = !this.blob || this.blob.type === 'image/jpeg';
     if (width && !height) {
       height = (imgHeight * width / imgWidth) << 0;
     } else if (height && !width) {
@@ -231,9 +233,9 @@
 
     var tagName = target.tagName.toLowerCase();
     if (tagName === 'img') {
-      target.src = renderImageToDataURL(this.srcImage, opt);
+      target.src = renderImageToDataURL(this.srcImage, opt, doSquash);
     } else if (tagName === 'canvas') {
-      renderImageToCanvas(this.srcImage, target, opt);
+      renderImageToCanvas(this.srcImage, target, opt, doSquash);
     }
     if (typeof this.onrender === 'function') {
       this.onrender(target);
