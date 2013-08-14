@@ -241,7 +241,9 @@
       this.onrender(target);
     }
 
-    callback();
+    if ( callback !== undefined ) {
+      callback();
+    }
   };
 
   /**
