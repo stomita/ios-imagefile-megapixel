@@ -172,7 +172,7 @@
    * MegaPixImage class
    */
   function MegaPixImage(srcImage) {
-    if (srcImage instanceof Blob) {
+    if (window.Blob && srcImage instanceof Blob) {
       var img = new Image();
       var URL = window.URL && window.URL.createObjectURL ? window.URL :
                 window.webkitURL && window.webkitURL.createObjectURL ? window.webkitURL :
