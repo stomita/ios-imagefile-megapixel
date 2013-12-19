@@ -167,6 +167,14 @@
     }
   }
 
+  function checkCanvasIfItIsNotToBig(canvas, options) {
+    while(canvas.toDataURL('image/jpeg') == 'data:,' && canvas.width>0 && canvas.height>0) {
+        canvas.width -= 10;
+        canvas.height -= 10;
+    }
+      options.width = canvas.width;
+      options.height = canvas.height;
+  }
 
   /**
    * MegaPixImage class
@@ -235,6 +243,7 @@
     if (tagName === 'img') {
       target.src = renderImageToDataURL(this.srcImage, opt, doSquash);
     } else if (tagName === 'canvas') {
+      checkCanvasIfItIsNotToBig(target, opt);
       renderImageToCanvas(this.srcImage, target, opt, doSquash);
     }
     if (typeof this.onrender === 'function') {
