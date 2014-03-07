@@ -75,7 +75,7 @@
     var width = options.width, height = options.height;
     var ctx = canvas.getContext('2d');
     ctx.save();
-    transformCoordinate(canvas, width, height, options.orientation);
+    transformCoordinate(canvas, ctx, width, height, options.orientation);
     var subsampled = detectSubsampling(img);
     if (subsampled) {
       iw /= 2;
@@ -111,7 +111,7 @@
    * Transform canvas coordination according to specified frame size and orientation
    * Orientation value is from EXIF tag
    */
-  function transformCoordinate(canvas, width, height, orientation) {
+  function transformCoordinate(canvas, ctx, width, height, orientation) {
     switch (orientation) {
       case 5:
       case 6:
@@ -124,7 +124,6 @@
         canvas.width = width;
         canvas.height = height;
     }
-    var ctx = canvas.getContext('2d');
     switch (orientation) {
       case 2:
         // horizontal flip
