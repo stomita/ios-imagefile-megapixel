@@ -200,10 +200,10 @@
   /**
    * Rendering megapix image into specified target element
    */
-  MegaPixImage.prototype.render = function(target, options) {
+  MegaPixImage.prototype.render = function(target, options, callback) {
     if (this.imageLoadListeners) {
       var _this = this;
-      this.imageLoadListeners.push(function() { _this.render(target, options) });
+      this.imageLoadListeners.push(function() { _this.render(target, options, callback); });
       return;
     }
     options = options || {};
@@ -238,6 +238,9 @@
     }
     if (typeof this.onrender === 'function') {
       this.onrender(target);
+    }
+    if (callback) {
+      callback();
     }
   };
 
