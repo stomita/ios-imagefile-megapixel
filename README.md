@@ -15,7 +15,10 @@ See ./test directory.
 
 
 ## FAQ
-Q. Photos from iPhone is rotated and not in correct orientation.
+Q. Photos from iPhone is rotated and not in correct orientation.  
 A. Orientation of jpeg file is recorded in EXIF format. This library won't detect exif information automatically. To detect the information in JavaScript, use exif.js (https://github.com/jseidelin/exif-js).
 
 
+## Note
+
+This project is not actively maintained by the author, and finding someone can contribute as a maintainer. See https://github.com/stomita/ios-imagefile-megapixel/issues/34 .
