@@ -183,7 +183,7 @@
     }
     if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
       var _this = this;
-      srcImage.onload = function() {
+      srcImage.onload = srcImage.onerror = function() {
         var listeners = _this.imageLoadListeners;
         if (listeners) {
           _this.imageLoadListeners = null;
