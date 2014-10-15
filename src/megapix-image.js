@@ -72,6 +72,7 @@
    */
   function renderImageToCanvas(img, canvas, options, doSquash) {
     var iw = img.naturalWidth, ih = img.naturalHeight;
+    if (!(iw+ih)) return;
     var width = options.width, height = options.height;
     var ctx = canvas.getContext('2d');
     ctx.save();
@@ -183,7 +184,7 @@
     }
     if (!srcImage.naturalWidth && !srcImage.naturalHeight) {
       var _this = this;
-      srcImage.onload = function() {
+      srcImage.onload = srcImage.onerror = function() {
         var listeners = _this.imageLoadListeners;
         if (listeners) {
           _this.imageLoadListeners = null;
