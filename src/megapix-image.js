@@ -208,10 +208,16 @@
       return;
     }
     options = options || {};
-    var imgWidth = this.srcImage.naturalWidth, imgHeight = this.srcImage.naturalHeight,
+    var srcImage = this.srcImage,
+        src = srcImage.src,
+        srcLength = src.length,
+        imgWidth = srcImage.naturalWidth, imgHeight = srcImage.naturalHeight,
         width = options.width, height = options.height,
         maxWidth = options.maxWidth, maxHeight = options.maxHeight,
-        doSquash = !this.blob || this.blob.type === 'image/jpeg';
+        doSquash = this.blob && this.blob.type === 'image/jpeg' ||
+                   src.indexOf('data:image/jpeg') === 0 ||
+                   src.indexOf('.jpg') === srcLength - 4 || 
+                   src.indexOf('.jpeg') === srcLength - 5;
     if (width && !height) {
       height = (imgHeight * width / imgWidth) << 0;
     } else if (height && !width) {
