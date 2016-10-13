@@ -230,7 +230,7 @@
     }
     var opt = { width : width, height : height };
     for (var k in options) opt[k] = options[k];
-
+    target.tagName = target.tagName || "IMG";
     var tagName = target.tagName.toLowerCase();
     if (tagName === 'img') {
       target.src = renderImageToDataURL(this.srcImage, opt, doSquash);
