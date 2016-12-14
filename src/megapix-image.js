@@ -10,24 +10,43 @@
  */
 (function() {
 
+  // In iOS all JPEGs will be subsampled if they are bigger than
+  // 5*1024*1024 pixels.
+  var SUBSAMPLE_LOWER_BOUNDARY = 5*1024*1024;
+  // in iOS all JPEGs that are bigger than 10*1024*1024 pixels will be
+  // subsampled at 1/16 of the original JPEG.
+  var SUBSAMPLE_UPPER_BOUNDARY = 4*SUBSAMPLE_LOWER_BOUNDARY;
+
   /**
    * Detect subsampling in loaded image.
    * In iOS, larger images than 2M pixels may be subsampled in rendering.
    */
-  function detectSubsampling(img) {
-    var iw = img.naturalWidth, ih = img.naturalHeight;
-    if (iw * ih > 1024 * 1024) { // subsampling may happen over megapixel image
+  function getSubsample(img) {
+    var iw = img.naturalWidth;
+    var ih = img.naturalHeight;
+    var pixels = iw * ih;
+    var canvas;
+    var ctx;
+
+    if( pixels > SUBSAMPLE_LOWER_BOUNDARY ) {
       var canvas = document.createElement('canvas');
       canvas.width = canvas.height = 1;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, -iw + 1, 0);
-      // subsampled image becomes half smaller in rendering size.
-      // check alpha channel value to confirm image is covering edge pixel or not.
-      // if alpha value is 0 image is not covering, hence subsampled.
-      return ctx.getImageData(0, 0, 1, 1).data[3] === 0;
-    } else {
-      return false;
+      ctx = canvas.getContext('2d');
     }
+
+    if ( pixels > SUBSAMPLE_UPPER_BOUNDARY) {
+      ctx.drawImage(img, - Math.floor(iw/4) - 1, 0);
+      if (ctx.getImageData(0, 0, 1, 1).data[3] === 0) {
+        return 0.25;
+      }
+    } else if ( pixels <= SUBSAMPLE_UPPER_BOUNDARY && pixels > SUBSAMPLE_LOWER_BOUNDARY ) {
+      ctx.drawImage(img, - Math.floor(iw/2) - 1, 0);
+      if (ctx.getImageData(0, 0, 1, 1).data[3] === 0) {
+        return 0.5;
+      }
+    }
+
+    return 1;
   }
 
   /**
@@ -76,12 +95,10 @@
     var width = options.width, height = options.height;
     var ctx = canvas.getContext('2d');
     ctx.save();
-    transformCoordinate(canvas, ctx, width, height, options.orientation);
-    var subsampled = detectSubsampling(img);
-    if (subsampled) {
-      iw /= 2;
-      ih /= 2;
-    }
+    transformCoordinate(canvas, width, height, options.orientation);
+    var subsample = getSubsample(img);
+    iw *= subsample;
+    ih *= subsample;
     var d = 1024; // size of tiling canvas
     var tmpCanvas = document.createElement('canvas');
     tmpCanvas.width = tmpCanvas.height = d;
